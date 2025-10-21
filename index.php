@@ -11,6 +11,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
         break;
 }
 
+$shuffledString = NULL;
+
 $command = $context['command'];
 switch ($command) {
     case 'welcome':
@@ -39,8 +41,11 @@ switch ($command) {
             // Change echos later
             echo "Guess is invalid";
         }
-        //elseif(strlen($guess) == 7 && )
-        
+        if (!validLetters($guess, $shuffledString))
+            echo "Guess is invalid";
+        else {
+            include "./game-over.html";
+        }
         break;
 
     case 'game-over':
@@ -59,16 +64,22 @@ function validLetters($guess, $word){
 }
 
 function validWord($guess) {
-    
-}
-
-function chooseWord(): String{
-    // Replace with "/var/www/html/homework/words7.txt"
-    // when moving pages to server
-    $dictFile = "web/www/hw3/words7.txt";
+    $dictFile = "./words7.txt";
     $dict = file_get_contents($dictFile);
     
     $words = preg_split("/\R", $dict);
-    return $words[array_rand($words)];
+    
+}
+
+function chooseShuffledString(): String{
+    // Replace with "/var/www/html/homework/words7.txt"
+    // when moving pages to server
+    $dictFile = "./words7.txt";
+    $dict = file_get_contents($dictFile);
+    
+    $words = preg_split("/\R", $dict);
+    global $shuffledString;
+    $shuffledString = str_shuffle($words[array_rand($words)]);
+    return $shuffledString;
 }
 ?>
