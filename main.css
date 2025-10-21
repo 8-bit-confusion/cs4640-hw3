@@ -1,0 +1,18 @@
+[class*="flex-"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.flex-row { flex-direction: row; }
+.flex-col { flex-direction: column; }
+
+.button-options > button {
+    width: 50px;
+    height: 25px;
+}
+
+.button-options > button:hover {
+    background-color: red;
+}

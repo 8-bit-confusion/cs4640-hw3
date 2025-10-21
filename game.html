@@ -1,0 +1,30 @@
+<?php
+$name = "John Doe";
+$email = "@gmail.com";
+?>
+
+<!DOCTYPE html lang='en'>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" value="Lilli Hrncir">
+        <link rel="stylesheet" href="./main.css">
+    </head>
+    <body class="flex-col">
+        <div class="user">
+            <h3><?php echo $username; ?></h3>
+            <h3><?php echo $email; ?></h3>
+        </div>
+        <div class="guessed-words">
+            
+            <p>You have <?php $guess_num; ?> left</h3>
+
+        </div>
+        <form method="post" action="index.php">
+            <label for="guess">Guess:</label>
+            <input id='guess' type='text' name='guess' style='font-size:20px;'>
+            <input type='hidden' name='command' value='guess'>
+            <button type="submit">
+        </form>
+    </body>
+</html>
