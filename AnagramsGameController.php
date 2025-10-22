@@ -38,9 +38,6 @@ class AnagramsGameController {
 
     public function welcome($passwordIncorrect = false) {
         include "./views/welcome.php";
-        if ($passwordIncorrect) {
-            echo '<script>document.getElementById("password-incorrect").style.display = "block";</script>';
-        }
     }
 
     public function login() {
