@@ -3,7 +3,11 @@
 class AnagramsGameController {
     private $db;
     private $context;
-    
+
+    private $username;
+    private $email;
+    private $password;
+
     private $shuffledString;
 
     public function __construct() {
@@ -17,15 +21,17 @@ class AnagramsGameController {
     }
 
     public function run() {
-        $command = $context['command'];
+        $command = 'welcome';
+        if (isset($this->context['command']))
+            $command = $this->context['command'];
         
         match ($command) {
-            'welcome', default => $this->welcome();
-            'login' => $this->login();
-            'start-game' => $this->startGame();
-            'process-guess' => $this->proccessGuess();
-            'game-over' => $this->gameover();
-        }
+            'welcome' => $this->welcome(),
+            'login' => $this->login(),
+            'start-game' => $this->startGame(),
+            'guess' => $this->proccessGuess(),
+            'game-over' => $this->gameover(),
+        };
     }
 
     // COMMAND FUNCTIONS ###########################################################################################
@@ -38,9 +44,9 @@ class AnagramsGameController {
     }
 
     public function login() {
-        $username = $context['username'];
-        $email = $context['email'];
-        $password = $context['password'];
+        $this->username = $this->context['username'];
+        $this->email = $this->context['email'];
+        $this->password = $this->context['password'];
         
         // handle login
 
@@ -53,7 +59,7 @@ class AnagramsGameController {
     }
 
     public function processGuess() {
-        $guess = $context["guess"];
+        $guess = $this->context["guess"];
         if (strlen($guess) != 7) {
             // Change echos later
             echo "Guess is invalid";
