@@ -37,7 +37,7 @@ class AnagramsGameController {
     // COMMAND FUNCTIONS ###########################################################################################
 
     public function welcome($passwordIncorrect = false) {
-        include "./welcome.html";
+        include "./views/welcome.php";
         if ($passwordIncorrect) {
             echo '<script>document.getElementById("password-incorrect").style.display = "block";</script>';
         }
@@ -55,7 +55,7 @@ class AnagramsGameController {
     }
 
     public function startGame() {
-        include "./game.html";
+        include "./views/game.php";
     }
 
     public function processGuess() {
@@ -67,12 +67,12 @@ class AnagramsGameController {
         if (!$this->validLetters($guess, $shuffledString))
             echo "Guess is invalid";
         else {
-            include "./game-over.html";
+            include "./views/game-over.php";
         }
     }
 
     public function gameover() {
-        include "./game-over.html";
+        include "./views/game-over.php";
     }
 
     // PRIVATE FUNCTIONS ###########################################################################################
