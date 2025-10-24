@@ -153,11 +153,11 @@ class AnagramsGameController {
 
     // Before uploading to server, replace dict file with /var/www/html/homework/word_bank.json
     private function validWord($guess) {
-        $dictFile = "./twl06.txt";
+        $dictFile = "word_bank.json";
         $dict = file_get_contents($dictFile);
-        
-        $words = preg_split("/\R/", $dict);
-        return in_array($guess, $words);
+        $arrayDict = json_decode($dict, true);
+        $length_array = $arrayDict[(string) strlen($guess)];
+        return in_array($guess, $length_array);
     }
 
 
