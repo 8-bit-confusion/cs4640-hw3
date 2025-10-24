@@ -13,7 +13,7 @@
             <input name="username" placeholder="Enter username" required>
             <input name="email" placeholder="Enter email address" required>
             <input name="password" placeholder="Enter password" required>
-            <span id="pwd-feedback"><?php if($passwordIncorrect) echo 'Password was incorrect. Please try again.' ?></span>
+            <span id="pwd-feedback"><?php if($showMessage) echo $message ?></span>
             <button type="submit" style="align-self: end;">Login</button>
         </form>
     </body>

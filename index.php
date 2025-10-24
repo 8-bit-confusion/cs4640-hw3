@@ -15,7 +15,7 @@ spl_autoload_register(function ($classname) {
 
 // instantiate and run controller
 // (from trivia example)
-$controller = new AnagramsGameController($_GET);
+$controller = new AnagramsGameController();
 $controller->run();
 
 ?>
