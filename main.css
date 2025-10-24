@@ -1,14 +1,20 @@
 @font-face {
-    font-family: "arcade-class";
-    src: url('./static/font/ARCADECLASSIC.ttf')
+    font-family: PixelGame;
+    src: url('./static/fonts/pixel-game/Pixel\ Game.otf') format('truetype');
 }
 
-/* html {
-    font-family: "arcade-class";
+@font-face {
+    font-family: PixelifySans;
+    src: url('./fonts/PixelifySans-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    font-family: PixelifySans;
     background-color: black;
     color: white;
-    
-} */
+}
 
 [class*="flex-"] {
     display: flex;
@@ -34,11 +40,9 @@
 }
 
 body {
-    background-color: #f8fafc;
-    color: #222;
-    font-family: "arcade-class", sans-serif;
     text-align: center;
     padding-top: 80px;
+    box-sizing: border-box;
 }
 
 h2 {
