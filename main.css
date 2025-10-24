@@ -1,3 +1,15 @@
+@font-face {
+    font-family: "arcade-class";
+    src: url('./static/font/ARCADECLASSIC.ttf')
+}
+
+/* html {
+    font-family: "arcade-class";
+    background-color: black;
+    color: white;
+    
+} */
+
 [class*="flex-"] {
     display: flex;
     align-items: center;
@@ -20,3 +32,20 @@
 .button-options > button:hover {
     background-color: red;
 }
+
+body {
+    background-color: #f8fafc;
+    color: #222;
+    font-family: "arcade-class", sans-serif;
+    text-align: center;
+    padding-top: 80px;
+}
+
+h2 {
+    font-size: 2.5em;
+    color: #2ecc71;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0.25em;
+}
+
+/* do ones for button and button hovere */

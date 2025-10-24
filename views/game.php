@@ -26,24 +26,24 @@
                         echo "$guess<br>\n";
                     }
                 ?>
-                You have <?php $guess_num; ?> left.
             </p>
         </div>
         <form class="shuffled-word" method="post">
             <h3><?php echo $_SESSION["shuffledString"]; ?></h3>
             <input type='hidden' name='command' value='shuffle'>
-            <button name="shuffle">Shuffle</button>
+            <button type="submit" name="shuffle">Shuffle</button>
         </form>
 
         <form method="post">
             <label for="guess">Guess:</label>
-            <input id='guess' type='text' name='guess' style='font-size:20px;'>
+            <input id='guess' type='text' name='guess' style='font-size:20px;' autofocus>
             <input type='hidden' name='command' value='guess'>
             <button type="submit">Submit guess</button>
-        </form method="post">
-            <input type='hidden' name='command' value='game-over'>
-            <button type="submit">Exit</button>
-        <form>
+        </form>
+        <form method="post">
+            <input type='hidden' name='command' value='quit'>
+            <button type="submit">Give up</button>
+        </form>
             
     </body>
 </html>

@@ -40,6 +40,7 @@ class AnagramsGameController {
             'game-over' => $this->gameover(),
             'logout' => $this->logout(),
             'shuffle' => $this->reshuffle(),
+            'quit' => $this->gameover(true),
         };
     }
 
@@ -77,7 +78,7 @@ class AnagramsGameController {
     }
 
     public function startGame() {
-        $_SESSION["guessedWords"] = [];
+        $_SESSION["guessedWords"] = array();
         $_SESSION["score"] = 0;
         $this->chooseShuffledString();
         include "./views/game.php";
@@ -85,33 +86,50 @@ class AnagramsGameController {
 
     public function processGuess() {
         $guess = $this->context["guess"];
-        if (!$this->validLetters($guess, $_SESSION["shuffledString"]))
+        if (in_array($guess, $_SESSION["guessedWords"])) {
+            echo "You already guessed this!";
+            include "./views/game.php";
+        }
+        elseif (!$this->validLetters($guess, $_SESSION["shuffledString"])) {
             echo "Guess has invalid letters.";
-        elseif (!$this->validWord($guess))
+            include "./views/game.php";
+        }
+        elseif (!$this->validWord($guess)) {
             echo "Guess is not a word.";
+            include "./views/game.php";
+        }
         elseif (strlen($guess) < 7) {
             echo "Congratulations on finding a valid word!";
-            $_SESSION["score"] += 10;
-            $_SESSION["guessedWords"].array_push($guess);
+            $_SESSION["score"] += match(strlen($guess)) {
+                1 => 1,
+                2 => 2,
+                3 => 4,
+                4 => 8,
+                5 => 15,
+                6 => 30,
+            };
+            array_push($_SESSION["guessedWords"], $guess);
+            include "./views/game.php";
         }
         else {
-            include "./views/game-over.php";
+            $this->gameover(false);
         }
     }
 
     public function reshuffle() {
         $_SESSION["shuffledString"] = str_shuffle($_SESSION["shuffledString"]);
+        include "./views/game.php";
     }
 
     public function logout() {
-        // save score & stats to db
         session_destroy();
 
         session_start();
         $this->welcome();
     }
 
-    public function gameover() {
+    public function gameover($quit) {
+        // TODO: save score & stats to db
         include "./views/game-over.php";
     }
 
@@ -119,13 +137,18 @@ class AnagramsGameController {
 
     // Turns the string into a 'set' of chars to see
     private function validLetters($guess, $word) {
-        $guess_chars = array_unique(str_split($guess));
-        $word_chars = array_unique(str_split($word));
+        $guess_chars = str_split($guess);
+        $word_chars = str_split($word);
 
         sort($guess_chars);
         sort( $word_chars );
 
-        return ($guess_chars == $word_chars);
+        foreach ($guess_chars as $char) {
+            if (!in_array($char, $word_chars)) { return false; }
+            array_shift($word_chars);
+        }
+
+        return true;
     }
 
     // Before uploading to server, replace dict file with /var/www/html/homework/word_bank.json
@@ -133,7 +156,7 @@ class AnagramsGameController {
         $dictFile = "./twl06.txt";
         $dict = file_get_contents($dictFile);
         
-        $words = preg_split("/\R", $dict);
+        $words = preg_split("/\R/", $dict);
         return in_array($guess, $words);
     }
 
@@ -147,9 +170,11 @@ class AnagramsGameController {
         $dictFile = "./words7.txt";
         $dict = file_get_contents($dictFile);
         
-        $words = preg_split("/\R", $dict);
+        $words = preg_split("/\R/", $dict);
         $_SESSION["shuffledString"] = str_shuffle($words[array_rand($words)]);
     }
+
+
 }
 
 ?>
