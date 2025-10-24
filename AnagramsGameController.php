@@ -87,16 +87,16 @@ class AnagramsGameController {
     public function processGuess() {
         $guess = $this->context["guess"];
         if (in_array($guess, $_SESSION["guessedWords"])) {
-            echo "You already guessed this!";
             include "./views/game.php";
+            echo "You already guessed this!";
         }
         elseif (!$this->validLetters($guess, $_SESSION["shuffledString"])) {
-            echo "Guess has invalid letters.";
             include "./views/game.php";
+            echo "Guess has invalid letters.";
         }
         elseif (!$this->validWord($guess)) {
-            echo "Guess is not a word.";
             include "./views/game.php";
+            echo "Guess is not a word.";
         }
         elseif (strlen($guess) < 7) {
             echo "Congratulations on finding a valid word!";

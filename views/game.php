@@ -9,33 +9,37 @@
         <link rel="stylesheet" href="./main.css">
     </head>
     <body class="flex-col">
-        <div class="user">
+        <div class="flex-row">
+            <div class="user flex-col" style="align-items:start;">
             <!-- note from lily to lilli---variables are no longer available
                  outside function scope, so they'll either be class variables,
                  which will require $this-> to access, or they'll have to be
                  defined in the function that includes this file. -->
-            <h3><?php echo $_SESSION["username"]; ?></h3>
-            <h3><?php echo $_SESSION["email"]; ?></h3>
-            <h3><?php echo $_SESSION["score"]; ?></h3>
+                <h3>User: <?php echo $_SESSION["username"]; ?></h3>
+                <h3>Email: <?php echo $_SESSION["email"]; ?></h3>
+                <h3>Score: <?php echo $_SESSION["score"]; ?></h3>
+            </div>
+            <div class="guessed-words">
+                <p>
+                    Guessed Words:
+                    <br>
+                    <?php
+                        foreach ($_SESSION["guessedWords"] as $guess) {
+                            echo "$guess<br>\n";
+                        }
+                    ?>
+                </p>
+            </div>
         </div>
-        
-        <div class="guessed-words">
-            <p>
-                <?php
-                    foreach ($_SESSION["guessedWords"] as $guess) {
-                        echo "$guess<br>\n";
-                    }
-                ?>
-            </p>
-        </div>
-        <form class="shuffled-word" method="post">
+        <form class="shuffled-word flex-row" method="post">
             <h3><?php echo $_SESSION["shuffledString"]; ?></h3>
             <input type='hidden' name='command' value='shuffle'>
             <button type="submit" name="shuffle">Shuffle</button>
         </form>
 
         <form method="post">
-            <label for="guess">Guess:</label>
+            <label  for="guess">Guess:</label>
+            <br>
             <input id='guess' type='text' name='guess' style='font-size:20px;' autofocus>
             <input type='hidden' name='command' value='guess'>
             <button type="submit">Submit guess</button>

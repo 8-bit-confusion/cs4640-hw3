@@ -1,6 +1,10 @@
+@property --font {
+    font-family: ArcadeClassic;
+}
+
 @font-face {
-    font-family: PixelGame;
-    src: url('./static/fonts/pixel-game/Pixel\ Game.otf') format('truetype');
+    font-family: ArcadeClassic;
+    src: url('./fonts/arcadeclassic/ARCADECLASSIC.woff2');
 }
 
 @font-face {
@@ -10,10 +14,16 @@
     font-style: normal;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+}
+
 html {
-    font-family: PixelifySans;
+    font-family: ArcadeClassic;
     background-color: black;
     color: white;
+    margin:0%;
 }
 
 [class*="flex-"] {
@@ -26,23 +36,16 @@ html {
 .flex-row { flex-direction: row; }
 .flex-col { flex-direction: column; }
 
-#pwd-feedback {
-    color: red;
-}
-
 .button-options > button {
     width: 50px;
     height: 25px;
 }
 
-.button-options > button:hover {
-    background-color: red;
-}
-
 body {
     text-align: center;
-    padding-top: 80px;
     box-sizing: border-box;
+    height: -webkit-fill-available;
+
 }
 
 h2 {
@@ -52,4 +55,34 @@ h2 {
     margin-bottom: 0.25em;
 }
 
+input[type="text"] {
+    background-color: black;
+    border: none;
+    color:white;
+    font-family: var(--font);
+}
+
+button  {
+    background-color: white;
+    color:black;
+    font-family: var(--font);
+}
+
+#button-options {
+    & > img {
+        height: 10px;
+        width: 10px;
+    }
+    & > a {
+        color:white;
+        text-decoration: none;
+    }
+}
+
+a:hover {
+    cursor: pointer;
+    .game-icon {
+        filter: invert(100%);
+    }
+}
 /* do ones for button and button hovere */

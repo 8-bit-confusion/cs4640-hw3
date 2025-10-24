@@ -10,9 +10,9 @@
         <form class="flex-col" style="width: 20%; align-items: stretch;" method="POST">
             <span>Login to AnagramsGame</span>
             <input type="hidden" name="command" value="login">
-            <input name="username" placeholder="Enter username" required>
-            <input name="email" placeholder="Enter email address" required>
-            <input name="password" placeholder="Enter password" required>
+            <input type="text" name="username" placeholder="Enter username" required>
+            <input type="text" name="email" placeholder="Enter email address" required>
+            <input type="text" name="password" placeholder="Enter password" required>
             <span id="pwd-feedback"><?php if($showMessage) echo $message ?></span>
             <button type="submit" style="align-self: end;">Login</button>
         </form>
