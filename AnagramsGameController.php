@@ -79,6 +79,7 @@ class AnagramsGameController {
 
     public function startGame() {
         $_SESSION["guessedWords"] = array();
+        $_SESSION["invalidGuesses"] = 0;
         $_SESSION["score"] = 0;
         $this->chooseShuffledString();
         include "./views/game.php";
@@ -89,14 +90,17 @@ class AnagramsGameController {
         if (in_array($guess, $_SESSION["guessedWords"])) {
             include "./views/game.php";
             echo "You already guessed this!";
+            $_SESSION["invalidGuesses"] += 1;
         }
         elseif (!$this->validLetters($guess, $_SESSION["shuffledString"])) {
             include "./views/game.php";
             echo "Guess has invalid letters.";
+            $_SESSION["invalidGuesses"] += 1;
         }
         elseif (!$this->validWord($guess)) {
             include "./views/game.php";
             echo "Guess is not a word.";
+            $_SESSION["invalidGuesses"] += 1;
         }
         elseif (strlen($guess) < 7) {
             echo "Congratulations on finding a valid word!";
