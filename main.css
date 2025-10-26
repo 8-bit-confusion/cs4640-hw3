@@ -66,6 +66,8 @@ button  {
     background-color: white;
     color:black;
     font-family: var(--font);
+
+    padding: 4px;
 }
 
 #button-options {
@@ -86,3 +88,28 @@ a:hover {
     }
 }
 /* do ones for button and button hovere */
+
+.user {
+    align-items: start;
+    justify-content: start;
+    position: absolute;
+    gap: 0px;
+    left: 0px; top: 0px;
+    height: 100%;
+    padding: 64;
+    border: 2px solid white;
+    box-sizing: border-box;
+}
+
+.guessed-words {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+    gap: 2px;
+    align-items: start;
+
+    height: 90%;
+    max-height: 90%;
+    width: 100%;
+}

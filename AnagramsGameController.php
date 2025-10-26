@@ -4,6 +4,9 @@ class AnagramsGameController {
     private $dbConnection;
     private $context;
 
+    private $shortWords;
+    private $sevenWords;
+
     public function __construct() {
         session_start();
 
@@ -20,6 +23,12 @@ class AnagramsGameController {
             'GET' => $_GET,
             'POST' => $_POST,
         };
+
+        $shortWordsFile = file_get_contents("word_bank.json");
+        $this->shortWords = json_decode($shortWordsFile, true);
+
+        $sevenWordsFile = file_get_contents("./words7.txt");
+        $this->sevenWords = preg_split("/\R/", $sevenWordsFile);
     }
 
     public function run() {
@@ -87,7 +96,7 @@ class AnagramsGameController {
 
     public function processGuess() {
         $guess = $this->context["guess"];
-        if (in_array($guess, $_SESSION["guessedWords"])) {
+        if (in_array(strtolower($guess), $_SESSION["guessedWords"])) {
             include "./views/game.php";
             echo "You already guessed this!";
             $_SESSION["invalidGuesses"] += 1;
@@ -103,8 +112,7 @@ class AnagramsGameController {
             $_SESSION["invalidGuesses"] += 1;
         }
         elseif (strlen($guess) < 7) {
-            echo "Congratulations on finding a valid word!";
-            $_SESSION["score"] += match(strlen($guess)) {
+            $points = match(strlen($guess)) {
                 1 => 1,
                 2 => 2,
                 3 => 4,
@@ -112,8 +120,11 @@ class AnagramsGameController {
                 5 => 15,
                 6 => 30,
             };
-            array_push($_SESSION["guessedWords"], $guess);
+
+            $_SESSION["score"] += $points;
+            array_push($_SESSION["guessedWords"], strtolower($guess));
             include "./views/game.php";
+            echo "Congratulations on finding a valid word! +$points points";
         }
         else {
             $this->gameover(false);
@@ -141,8 +152,8 @@ class AnagramsGameController {
 
     // Turns the string into a 'set' of chars to see
     private function validLetters($guess, $word) {
-        $guess_chars = str_split($guess);
-        $word_chars = str_split($word);
+        $guess_chars = str_split(strtolower($guess));
+        $word_chars = str_split(strtolower($word));
 
         sort($guess_chars);
         sort( $word_chars );
@@ -157,11 +168,12 @@ class AnagramsGameController {
 
     // Before uploading to server, replace dict file with /var/www/html/homework/word_bank.json
     private function validWord($guess) {
-        $dictFile = "word_bank.json";
-        $dict = file_get_contents($dictFile);
-        $arrayDict = json_decode($dict, true);
-        $length_array = $arrayDict[(string) strlen($guess)];
-        return in_array($guess, $length_array);
+        if (strlen($guess) < 6) {
+            $length_array = $this->shortWords[(string) strlen($guess)];
+            return in_array(strtolower($guess), $length_array);
+        }
+        
+        return in_array(strtolower($guess), $this->sevenWords);
     }
 
 
@@ -171,14 +183,9 @@ class AnagramsGameController {
     private function chooseShuffledString() {
         // Replace with "/var/www/html/homework/words7.txt"
         // when moving pages to server
-        $dictFile = "./words7.txt";
-        $dict = file_get_contents($dictFile);
-        
-        $words = preg_split("/\R/", $dict);
-        $_SESSION["shuffledString"] = str_shuffle($words[array_rand($words)]);
+        $_SESSION["targetWord"] = $this->sevenWords[array_rand($this->sevenWords)];
+        $_SESSION["shuffledString"] = str_shuffle($_SESSION["targetWord"]);
     }
-
-
 }
 
 ?>
