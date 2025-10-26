@@ -8,7 +8,7 @@
         <meta name="author" value="Lily Wasko">
         <link rel="stylesheet" href="./main.css">
     </head>
-    <body class="flex-col" style="gap: 24px; position: relative;">
+    <body class="flex-row" style="gap: 64px;">
         <div class="user flex-col">
             <!-- note from lily to lilli---variables are no longer available
                 outside function scope, so they'll either be class variables,
@@ -20,7 +20,7 @@
             <h3>HINT: <?php echo $_SESSION["targetWord"]; ?></h3>
         </div>
 
-        <div class="flex-col" style="gap: 32px; width: 50vw; height: 100%; max-height: 100%;">
+        <div class="flex-col" style="gap: 32px; flex-grow: 1; height: 100%; max-height: 100%;">
             <div class="flex-col" style="height: 50vh; width: 100%; align-items: start; justify-content: start;">
                 <h3>Guessed words:</h3>
                 <div class="guessed-words">

@@ -92,11 +92,9 @@ a:hover {
 .user {
     align-items: start;
     justify-content: start;
-    position: absolute;
     gap: 0px;
-    left: 0px; top: 0px;
-    height: 100%;
-    padding: 64;
+    align-self: stretch;
+    padding: 64 32;
     border: 2px solid white;
     box-sizing: border-box;
 }
