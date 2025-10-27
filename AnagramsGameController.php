@@ -139,6 +139,7 @@ class AnagramsGameController {
     }
 
     public function reshuffle() {
+        $response = "";
         $_SESSION["shuffledString"] = str_shuffle($_SESSION["shuffledString"]);
         include "./views/game.php";
     }
