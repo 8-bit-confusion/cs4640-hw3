@@ -210,7 +210,14 @@ class AnagramsGameController {
     // value here since refactoring means we can just
     // set a class variable
     private function chooseShuffledString() {
+        $past_words_result = pg_query_params($this->dbConnection, "SELECT word FROM hw3_games INNER JOIN hw3_words ON hw3_words.word_id = hw3_games.word_id WHERE hw3_games.user_id = $1", [$_SESSION["user_id"]]);
+        $past_words = array_map(function($a) { return $a["word"]; }, pg_fetch_all($past_words_result));
+
         $_SESSION["targetWord"] = $this->sevenWords[array_rand($this->sevenWords)];
+        while (in_array($_SESSION["targetWord"], $past_words)) {
+            $_SESSION["targetWord"] = $this->sevenWords[array_rand($this->sevenWords)];
+        }
+
         $_SESSION["shuffledString"] = str_shuffle($_SESSION["targetWord"]);
     }
 }
