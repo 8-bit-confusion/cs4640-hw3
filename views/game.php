@@ -35,8 +35,15 @@
 
                 $scores_result = pg_query_params($this->dbConnection, "SELECT score FROM hw3_games WHERE hw3_games.user_id = $1", [$_SESSION["user_id"]]);
                 $scores = array_map(function($a) { return $a["score"]; }, pg_fetch_all($scores_result));
-                $high_score = max($scores);
-                $avg_score = round(array_sum($scores) / count($scores));
+
+                $high_score = 0;
+                $avg_score = 0;
+
+                
+                if (count($scores) > 0) {
+                    $high_score = max($scores);
+                    $avg_score = round(array_sum($scores) / count($scores));
+                }
 
                 echo "<h3>High score: $high_score</h3>";
                 echo "<h3>Avg. score: $avg_score</h3>";
