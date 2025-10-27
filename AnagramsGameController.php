@@ -24,13 +24,10 @@ class AnagramsGameController {
             'POST' => $_POST,
         };
 
-        // Before uploading to server, replace dict file with /var/www/html/homework/word_bank.json
-        $shortWordsFile = file_get_contents("./word_bank.json");
+        $shortWordsFile = file_get_contents("/var/www/html/homework/word_bank.json");
         $this->shortWords = json_decode($shortWordsFile, true);
-
-        // Replace with "/var/www/html/homework/words7.txt"
-        // when moving pages to server
-        $sevenWordsFile = file_get_contents("./words7.txt");
+        
+        $sevenWordsFile = file_get_contents("/var/www/html/homework/words7.txt");
         $this->sevenWords = preg_split("/\R/", $sevenWordsFile);
     }
 
