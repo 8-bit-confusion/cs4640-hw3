@@ -85,6 +85,12 @@ class AnagramsGameController {
 
         $_SESSION["username"] = $username;
         $_SESSION["email"] = $email;
+
+        // get the current user's user_id so we can link IT into the games table
+        $user_id_result = pg_query_params($this->dbConnection, "SELECT user_id FROM hw3_users WHERE hw3_users.email = $1", [$_SESSION["email"]]);
+        $user_id = pg_fetch_all($user_id_result)[0]["user_id"];
+        $_SESSION["user_id"] = $user_id;
+
         $this->startGame();
     }
 
@@ -93,24 +99,26 @@ class AnagramsGameController {
         $_SESSION["invalidGuesses"] = 0;
         $_SESSION["score"] = 0;
         $this->chooseShuffledString();
+        $response = "";
         include "./views/game.php";
     }
 
     public function processGuess() {
         $guess = $this->context["guess"];
+        $response = "";
         if (in_array(strtolower($guess), $_SESSION["guessedWords"])) {
+            $response = "You already guessed this!";
             include "./views/game.php";
-            echo "You already guessed this!";
             $_SESSION["invalidGuesses"] += 1;
         }
         elseif (!$this->validLetters($guess, $_SESSION["shuffledString"])) {
+            $response = "Guess has invalid letters.";
             include "./views/game.php";
-            echo "Guess has invalid letters.";
             $_SESSION["invalidGuesses"] += 1;
         }
         elseif (!$this->validWord($guess)) {
+            $response = "Guess is not a word.";
             include "./views/game.php";
-            echo "Guess is not a word.";
             $_SESSION["invalidGuesses"] += 1;
         }
         elseif (strlen($guess) < 7) {
@@ -125,8 +133,8 @@ class AnagramsGameController {
 
             $_SESSION["score"] += $points;
             array_push($_SESSION["guessedWords"], strtolower($guess));
+            $response = "Congratulations on finding a valid word! +$points points";
             include "./views/game.php";
-            echo "Congratulations on finding a valid word! +$points points";
         }
         else {
             $this->gameover(false);
@@ -147,19 +155,29 @@ class AnagramsGameController {
 
     public function gameover($quit = false) {
         // this word has been played, so add it to the hw3_words table
-        pg_query_params($this->dbConnection, "INSERT INTO hw3_words (word) VALUES ($1)", [$_SESSION["targetWord"]]);
+        $word_in_db_result = pg_query_params($this->dbConnection, "SELECT word FROM hw3_words WHERE hw3_words.word = $1", [$_SESSION["targetWord"]]);
+        $word_in_db = pg_fetch_all($word_in_db_result);
+        
+        if (count($word_in_db) == 0) {
+            pg_query_params($this->dbConnection, "INSERT INTO hw3_words (word) VALUES ($1)", [$_SESSION["targetWord"]]);
+        }
 
         // get the associated word id so we can link it into the games table
         $word_id_result = pg_query_params($this->dbConnection, "SELECT word_id FROM hw3_words WHERE hw3_words.word = $1", [$_SESSION["targetWord"]]);
         $word_id = pg_fetch_all($word_id_result)[0]["word_id"];
 
-        // get the current user's user_id so we can link IT into the games table
-        $user_id_result = pg_query_params($this->dbConnection, "SELECT user_id FROM hw3_users WHERE hw3_users.email = $1", [$_SESSION["email"]]);
-        $user_id = pg_fetch_all($user_id_result)[0]["user_id"];
-
         // add the game data to the games table
-        $quit
-        pg_query_params($this->dbConnection, "INSERT INTO hw3_games (user_id, word_id, score, won, quit_early) VALUES ($1, $2, $3, $4, $5)", [$user_id, $word_id, $_SESSION["score"], !$quit, $quit]);
+        $did_quit = match($quit) {
+            true => '1',
+            false => '0',
+        };
+
+        $did_win = match(!$quit) {
+            true => '1',
+            false => '0',
+        };
+
+        pg_query_params($this->dbConnection, "INSERT INTO hw3_games (user_id, word_id, score, won, quit_early) VALUES ($1, $2, $3, $4, $5)", [$_SESSION["user_id"], $word_id, $_SESSION["score"], $did_win, $did_quit]);
         include "./views/game-over.php";
     }
 
