@@ -29,7 +29,10 @@
                 $won_games_result = pg_query_params($this->dbConnection, "SELECT * FROM hw3_games WHERE hw3_games.user_id = $1 AND hw3_games.won = TRUE", [$_SESSION["user_id"]]);
                 $won_games = count(pg_fetch_all($won_games_result));
 
-                $win_percent = (int) (100 * $won_games / $played_games);
+                $win_percent = 0;
+                if ($won_games > 0) {
+                    $win_percent = (int) (100 * $won_games / $played_games);
+                }
 
                 echo "<h3>Win rate: $win_percent%</h3>";
 
