@@ -94,7 +94,7 @@ a:hover {
     justify-content: start;
     gap: 0px;
     align-self: stretch;
-    padding: 64 32;
+    padding: 32;
     border: 2px solid white;
     box-sizing: border-box;
 }

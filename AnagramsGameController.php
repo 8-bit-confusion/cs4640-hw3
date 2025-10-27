@@ -24,9 +24,12 @@ class AnagramsGameController {
             'POST' => $_POST,
         };
 
-        $shortWordsFile = file_get_contents("word_bank.json");
+        // Before uploading to server, replace dict file with /var/www/html/homework/word_bank.json
+        $shortWordsFile = file_get_contents("./word_bank.json");
         $this->shortWords = json_decode($shortWordsFile, true);
 
+        // Replace with "/var/www/html/homework/words7.txt"
+        // when moving pages to server
         $sevenWordsFile = file_get_contents("./words7.txt");
         $this->sevenWords = preg_split("/\R/", $sevenWordsFile);
     }
@@ -62,22 +65,21 @@ class AnagramsGameController {
     public function login() {
         $username = $this->context["username"];
         $email = $this->context["email"];
-        $password_hash = password_hash($this->context["password"], PASSWORD_BCRYPT);
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->welcome(true, "Email was not valid. Please try again.");
-        }
+        $password = $this->context["password"];
         
-        $email_in_db = pg_query_params($this->dbConnection, "SELECT EXISTS (SELECT 1 FROM hw3_users WHERE hw3_users.email = $1)", [$email]);
-        echo $email_in_db;
-        if ($email_in_db == 1) {
-            $db_hash = pg_query_params($this->dbConnection, "SELECT password_hash FROM hw3_users WHERE email = $1", [$email]); // get password where email is the current email
-            
-            if ($db_hash != $password_hash) {
+        $email_in_db_result = pg_query_params($this->dbConnection, "SELECT email FROM hw3_users WHERE hw3_users.email = $1", [$email]);
+        $email_in_db = pg_fetch_all($email_in_db_result);
+
+        if (count($email_in_db) > 0) {
+            $db_hash_result = pg_query_params($this->dbConnection, "SELECT password_hash FROM hw3_users WHERE email = $1", [$email]); // get password where email is the current email
+            $db_hash = pg_fetch_all($db_hash_result)[0]["password_hash"];
+
+            if (!password_verify($password, $db_hash)) {
                 $this->welcome(true, "Password was incorrect. Please try again.");
                 return;
             }
         } else {
+            $password_hash = password_hash($password, PASSWORD_BCRYPT);
             pg_query_params($this->dbConnection, "INSERT INTO hw3_users (name, email, password_hash) VALUES ($1, $2, $3)", [$username, $email, $password_hash]); // insert username, email, & password into table
         }
 
@@ -143,8 +145,21 @@ class AnagramsGameController {
         $this->welcome();
     }
 
-    public function gameover($quit) {
-        // TODO: save score & stats to db
+    public function gameover($quit = false) {
+        // this word has been played, so add it to the hw3_words table
+        pg_query_params($this->dbConnection, "INSERT INTO hw3_words (word) VALUES ($1)", [$_SESSION["targetWord"]]);
+
+        // get the associated word id so we can link it into the games table
+        $word_id_result = pg_query_params($this->dbConnection, "SELECT word_id FROM hw3_words WHERE hw3_words.word = $1", [$_SESSION["targetWord"]]);
+        $word_id = pg_fetch_all($word_id_result)[0]["word_id"];
+
+        // get the current user's user_id so we can link IT into the games table
+        $user_id_result = pg_query_params($this->dbConnection, "SELECT user_id FROM hw3_users WHERE hw3_users.email = $1", [$_SESSION["email"]]);
+        $user_id = pg_fetch_all($user_id_result)[0]["user_id"];
+
+        // add the game data to the games table
+        $quit
+        pg_query_params($this->dbConnection, "INSERT INTO hw3_games (user_id, word_id, score, won, quit_early) VALUES ($1, $2, $3, $4, $5)", [$user_id, $word_id, $_SESSION["score"], !$quit, $quit]);
         include "./views/game-over.php";
     }
 
@@ -166,7 +181,6 @@ class AnagramsGameController {
         return true;
     }
 
-    // Before uploading to server, replace dict file with /var/www/html/homework/word_bank.json
     private function validWord($guess) {
         if (strlen($guess) < 6) {
             $length_array = $this->shortWords[(string) strlen($guess)];
@@ -181,8 +195,6 @@ class AnagramsGameController {
     // value here since refactoring means we can just
     // set a class variable
     private function chooseShuffledString() {
-        // Replace with "/var/www/html/homework/words7.txt"
-        // when moving pages to server
         $_SESSION["targetWord"] = $this->sevenWords[array_rand($this->sevenWords)];
         $_SESSION["shuffledString"] = str_shuffle($_SESSION["targetWord"]);
     }

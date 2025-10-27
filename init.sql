@@ -24,7 +24,7 @@ CREATE TABLE hw3_games (
     word_id INT NOT NULL REFERENCES hw3_words(word_id) ON DELETE CASCADE,
     score INT DEFAULT 0 CHECK (score >= 0),
     won BOOLEAN DEFAULT FALSE,
-    quit_early BOOLEAN DEFAULT FALSE
+    quit_early BOOLEAN DEFAULT FALSE,
     CONSTRAINT uq_user_word UNIQUE (user_id, word_id)
 );
 
